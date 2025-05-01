@@ -45,7 +45,7 @@ export const login = async (req, res) => {
         if (!isMatch)
             return res.status(400).json({ message: 'Invalid email or password' });
 
-        const token = jwt.sign({ userId: user._id , role : user.role }, JWT_SECRET, {
+        const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, {
             expiresIn: JWT_EXPIRES_IN,
         });
 
@@ -56,36 +56,76 @@ export const login = async (req, res) => {
 };
 export const getAllUsers = async (req, res) => {
     try {
-      const { role, id, email } = req.query;
-  
-      const filter = {};
-  
-      if (role) {
-        filter.role = role;
-      }
-  
-      if (email) {
-        filter.email = email;
-      }
-  
-      if (id && mongoose.Types.ObjectId.isValid(id)) {
-        filter._id = id;
-      }
-  
-      const users = await User.find(filter);
-  
-      res.status(200).json({
-        message: 'Users fetched successfully',
-        users: users.map(user => ({
-          id: user._id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          phone: user.phone,
-          role: user.role,
-        })),
-      });
+        const { role, id, email } = req.query;
+
+        const filter = {};
+
+        if (role) {
+            filter.role = role;
+        }
+
+        if (email) {
+            filter.email = email;
+        }
+
+        if (id && mongoose.Types.ObjectId.isValid(id)) {
+            filter._id = id;
+        }
+
+        const users = await User.find(filter);
+
+        res.status(200).json({
+            message: 'Users fetched successfully',
+            users: users.map(user => ({
+                id: user._id,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                phone: user.phone,
+                role: user.role,
+            })),
+        });
     } catch (error) {
-      res.status(500).json({ message: 'Fetching users failed', error: error.message });
+        res.status(500).json({ message: 'Fetching users failed', error: error.message });
     }
-  };
+};
+export const updateUserById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updates = req.body;
+
+        const user = await User.findByIdAndUpdate(id, updates, {
+            new: true,
+            runValidators: true,
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({
+            message: 'User updated successfully',
+            user,
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to update user', error: error.message });
+    }
+};
+export const deleteUserById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const user = await User.findByIdAndDelete(id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({
+            message: 'User deleted successfully',
+            user,
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to delete user', error: error.message });
+    }
+};

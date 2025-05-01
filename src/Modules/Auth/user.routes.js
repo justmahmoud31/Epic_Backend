@@ -6,7 +6,7 @@
  */
 
 import express from 'express';
-import { signup, login, getAllUsers } from './user.controller.js';
+import { signup, login, getAllUsers, deleteUserById, updateUserById } from './user.controller.js';
 import { userValidationRules } from './user.validator.js';
 import validate from '../../config/validate.js';
 import protect from '../../Middlewares/authMiddleware.js';
@@ -52,10 +52,10 @@ router.post('/signup', userValidationRules, validate, signup);
  *             properties:
  *               email:
  *                 type: string
- *                 example: user@example.com
+ *                 example: admin@admin.com
  *               password:
  *                 type: string
- *                 example: StrongPass123
+ *                 example: Admin@1
  *     responses:
  *       200:
  *         description: Login successful
@@ -65,7 +65,7 @@ router.post('/signup', userValidationRules, validate, signup);
 router.post('/login', login);
 /**
  * @swagger
- * /api/auth/admin:
+ * /api/auth/users:
  *   get:
  *     summary: Get all users (admin-only, with filters)
  *     tags: [Auth]
@@ -120,4 +120,66 @@ router.post('/login', login);
  */
 
 router.get('/users', protect, allowRoles('admin'), getAllUsers);
+/**
+ * @swagger
+ * /api/auth/user/{id}:
+ *   put:
+ *     summary: Update a user by ID
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: MongoDB ID of the user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User updated
+ *       404:
+ *         description: User not found
+ */
+router.put('/user/:id', protect, allowRoles('admin'), updateUserById);
+
+/**
+ * @swagger
+ * /api/auth/user/{id}:
+ *   delete:
+ *     summary: Delete a user by ID
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: MongoDB ID of the user
+ *     responses:
+ *       200:
+ *         description: User deleted
+ *       404:
+ *         description: User not found
+ */
+router.delete('/user/:id', protect, allowRoles('admin'), deleteUserById);
 export default router;
