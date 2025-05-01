@@ -6,9 +6,11 @@
  */
 
 import express from 'express';
-import { signup, login } from './user.controller.js';
+import { signup, login, getAllUsers } from './user.controller.js';
 import { userValidationRules } from './user.validator.js';
 import validate from '../../config/validate.js';
+import protect from '../../Middlewares/authMiddleware.js';
+import allowRoles from '../../Middlewares/roleMiddleware.js';
 
 const router = express.Router();
 
@@ -61,5 +63,61 @@ router.post('/signup', userValidationRules, validate, signup);
  *         description: Invalid credentials
  */
 router.post('/login', login);
+/**
+ * @swagger
+ * /api/auth/admin:
+ *   get:
+ *     summary: Get all users (admin-only, with filters)
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: role
+ *         schema:
+ *           type: string
+ *           enum: [admin, user]
+ *         description: Filter by user role
+ *       - in: query
+ *         name: email
+ *         schema:
+ *           type: string
+ *         description: Filter by user email
+ *       - in: query
+ *         name: id
+ *         schema:
+ *           type: string
+ *         description: Filter by user ID (MongoDB ObjectId)
+ *     responses:
+ *       200:
+ *         description: List of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 users:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       email:
+ *                         type: string
+ *                       firstName:
+ *                         type: string
+ *                       lastName:
+ *                         type: string
+ *                       phone:
+ *                         type: string
+ *                       role:
+ *                         type: string
+ *       403:
+ *         description: Access denied
+ */
 
+router.get('/admin', protect, allowRoles('admin'), getAllUsers);
 export default router;

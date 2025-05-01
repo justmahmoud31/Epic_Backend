@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from './user.models.js';
-
+import mongoose from 'mongoose';
 const JWT_SECRET = process.env.JWT_SECRET; // ideally from .env
 const JWT_EXPIRES_IN = '7d'; // adjust as needed
 
@@ -45,7 +45,7 @@ export const login = async (req, res) => {
         if (!isMatch)
             return res.status(400).json({ message: 'Invalid email or password' });
 
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+        const token = jwt.sign({ userId: user._id , role : user.role }, JWT_SECRET, {
             expiresIn: JWT_EXPIRES_IN,
         });
 
@@ -54,3 +54,38 @@ export const login = async (req, res) => {
         res.status(500).json({ message: 'Login failed', error: error.message });
     }
 };
+export const getAllUsers = async (req, res) => {
+    try {
+      const { role, id, email } = req.query;
+  
+      const filter = {};
+  
+      if (role) {
+        filter.role = role;
+      }
+  
+      if (email) {
+        filter.email = email;
+      }
+  
+      if (id && mongoose.Types.ObjectId.isValid(id)) {
+        filter._id = id;
+      }
+  
+      const users = await User.find(filter);
+  
+      res.status(200).json({
+        message: 'Users fetched successfully',
+        users: users.map(user => ({
+          id: user._id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          phone: user.phone,
+          role: user.role,
+        })),
+      });
+    } catch (error) {
+      res.status(500).json({ message: 'Fetching users failed', error: error.message });
+    }
+  };
