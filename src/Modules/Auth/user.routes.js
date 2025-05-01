@@ -119,5 +119,5 @@ router.post('/login', login);
  *         description: Access denied
  */
 
-router.get('/admin', protect, allowRoles('admin'), getAllUsers);
+router.get('/users', protect, allowRoles('admin'), getAllUsers);
 export default router;
