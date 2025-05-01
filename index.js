@@ -5,11 +5,11 @@ import { swaggerUi, swaggerSpec } from './src/config/swagger.js';
 import { bootstrap } from "./src/Modules/bootstrap.js";;
 import cors from 'cors';
 dotenv.config();
-const app = express()
+const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
 app.use(cors());
+app.use('/uploads', express.static('uploads'));
 const port = 3000
 connectDB();
 bootstrap(app);
