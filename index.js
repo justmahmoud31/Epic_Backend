@@ -9,7 +9,15 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use('/uploads', express.static('uploads'));
+app.use(
+    "/uploads",
+    express.static(uploadsDir, {
+        setHeaders: (res, path) => {
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+        },
+    })
+);
 const port = 3000
 connectDB();
 bootstrap(app);
