@@ -8,16 +8,21 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+  origin: 'https://api.ipek-eg.com', // or 'https://api.ipek-eg.com' if you want to restrict
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
+
 app.use(
-    "/uploads",
-    express.static("uploads", {
-      setHeaders: (res, path) => {
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-      },
-    })
-  );
+  "/uploads",
+  express.static("uploads", {
+    setHeaders: (res, path) => {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    },
+  })
+);
 const port = 3000
 connectDB();
 bootstrap(app);
