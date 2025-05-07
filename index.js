@@ -8,19 +8,9 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const allowedOrigins = ['https://api.ipek-eg.com', 'http://localhost:5173'];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
+  origin: '*', // or 'https://api.ipek-eg.com' if you want to restrict
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 
