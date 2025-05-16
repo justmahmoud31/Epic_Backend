@@ -2,7 +2,7 @@
 
 import express from 'express';
 import upload from '../../config/MulterConfig.js'; // Adjust path if needed
-import { addVerification, getAllVerifications } from './verification.controller.js';
+import { addVerification, getAllVerifications, getMyVerification } from './verification.controller.js';
 import protect from '../../Middlewares/authMiddleware.js';
 import allowRoles from '../../Middlewares/roleMiddleware.js';
 
@@ -86,5 +86,5 @@ router.get('/', protect, allowRoles('admin'), getAllVerifications);
  *       200:
  *         description: List of verifications for the authenticated user
  */
-router.get('/me', protect, getAllVerifications);
+router.get('/me', protect, getMyVerification);
 export default router;

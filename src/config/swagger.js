@@ -12,7 +12,7 @@ const options = {
     },
     servers: [
       {
-        url: 'https://api.ipek-eg.com',
+        url: 'http://localhost:3000',
         description: 'Local dev server',
       },
     ],
