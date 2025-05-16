@@ -46,6 +46,7 @@ export const getAllVerifications = async (req, res) => {
 };
 export const getMyVerification = async (req, res) => {
     try {
+        console.log(req.user);
         const userId = req.user.userId;
         const verifications = await Verification.find({ userId }).populate('productId'); // adjust field name as needed
 
