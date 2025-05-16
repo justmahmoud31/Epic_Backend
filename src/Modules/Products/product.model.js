@@ -51,12 +51,12 @@ import mongoose from 'mongoose';
 const productSchema = new mongoose.Schema(
     {
         name: { type: String, required: true, trim: true },
-        description: { type: String, required: true },
-        price: { type: Number, required: true },
-        model: { type: String, required: true },
+        description: { type: String, required: false },
+        price: { type: Number, required: false },
+        model: { type: String, required: false },
         imageCover: { type: String, required: true },
         images: [{ type: String }],
-        stock: { type: Number, required: true },
+        stock: { type: Number, required: false },
         category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
     },
     { timestamps: true }
