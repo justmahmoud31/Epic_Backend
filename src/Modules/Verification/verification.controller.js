@@ -4,8 +4,8 @@ import Verification from './verification.model.js';
 
 export const addVerification = async (req, res) => {
     try {
-        const userId = req.user.userId;
-        const { productId } = req.body;
+     
+        const { productId,phone } = req.body;
         const verificationImage = req.file.path ? `uploads/general/${req.file.filename}` : undefined;
         if (!verificationImage) {
             return res.status(400).json({ message: 'Verification image is required' });
@@ -13,7 +13,7 @@ export const addVerification = async (req, res) => {
         if (!productId) {
             return res.status(400).json({ message: 'Product ID is required' });
         }
-        const verification = await Verification.create({ userId, productId, verificationImage });
+        const verification = await Verification.create({ phone, productId, verificationImage });
 
         res.status(201).json({ message: 'Product verified', verification });
     } catch (error) {
@@ -22,10 +22,9 @@ export const addVerification = async (req, res) => {
 };
 export const getAllVerifications = async (req, res) => {
     try {
-        const { id, userId, productId } = req.query;
+        const { phone, productId } = req.query;
         const filter = {};
-        if (id) filter._id = id;
-        if (userId) filter.userId = userId;
+        if (phone) filter.phone = phone;
         if (productId) filter.productId = productId;
 
         const verifications = await Verification.find(filter)
@@ -46,8 +45,8 @@ export const getAllVerifications = async (req, res) => {
 };
 export const getMyVerification = async (req, res) => {
     try {
-        const userId = req.user.userId;
-        const verifications = await Verification.find({ userId }).populate('productId'); // adjust field name as needed
+        const phone = req.user.phone;
+        const verifications = await Verification.find({ phone }).populate('productId'); // adjust field name as needed
 
         res.status(200).json({
             Message: "Verification Retrieved Successfully",

@@ -35,8 +35,8 @@
 import mongoose from 'mongoose';
 
 const verificationSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
+ phone: {
+    type: mongoose.Schema.Types.String,
     ref: 'User',
     required: true
   },

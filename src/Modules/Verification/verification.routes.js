@@ -42,7 +42,7 @@ const router = express.Router();
  */
 
 router.post(
-    '/', upload.single('verificationImage'), protect,
+    '/', upload.single('verificationImage'), 
     addVerification
 );
 /**
