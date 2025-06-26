@@ -28,10 +28,7 @@ export const getAllVerifications = async (req, res) => {
         if (productId) filter.productId = productId;
 
         const verifications = await Verification.find(filter)
-            .populate({
-                path: 'userId',
-                select: 'firstName lastName email'
-            })
+           
             .populate('productId'); // Optional: you can also limit fields here if needed
 
         res.status(200).json({
